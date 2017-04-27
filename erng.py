@@ -5,13 +5,19 @@ import os
 maxfloat = sys.float_info.max
 
 units = ['m','s','kg','A','K','cd','mol','$']
-print '///////////////////////////////////////////////'
-print '/// THE ENGINEERING RANDOM NUMBER GENERATOR ///'
-print '///////////////////////////////////////////////'
+print('///////////////////////////////////////////////')
+print('/// THE ENGINEERING RANDOM NUMBER GENERATOR ///')
+print('///////////////////////////////////////////////')
 
-num = input("How many random numbers shall I generate? ")
+while True:
+    num = input("How many random numbers shall I generate? ")
+    if num.isnumeric():
+        num=int(num)
+        break
+    else:
+        print('Please enter a number.')
 #===============================================================================
-#generate the file
+#generate the units
 f = open('out.docx','w')
 for i in range(num):
     mag = np.random.randint(0,11)
@@ -23,6 +29,35 @@ for i in range(num):
         sign = np.random.randint(0,2)*2-1 #+1 or -1
         unitarray[a]+=sign
 
+#===============================================================================
+#simplify into derived units
+    maxpower=3
+    derived_units=['Pa','J','C','V']
+    definitions={'Pa':[-1,-2,1,0,0,0,0,0],'J':[2,-2,1,0,0,0,0,0],'C':[0,1,0,1,0,0,0,0],'V':[2,-3,1,-1,0,0,0,0]}
+
+    derived_unitarray = [0]*len(units)
+    numder=len(derived_units)
+    power_array=np.indices(tuple([maxpower*2+1 for x in derived_units]))-maxpower-1
+    power_list=[0]*len(derived_units)
+    for y in range(len(derived_units)):
+        power_list[y]=power_array[y].flatten()
+    bestunits=unitarray
+    bestpowers=[0]*len(derived_units)
+    for x in range(len(power_list[0])):
+        newunits=unitarray
+        powers=[power_list[y][x] for y in range(len(derived_units))]
+        for y in range(len(derived_units)):
+            unit=derived_units[y]
+            newunits=[newunits[k]-powers[y]*definitions[unit][k] for k in range(len(unitarray))]
+            #newunits=list(np.array(newunits)-powers[y]*np.array(definitions[unit]))
+        if sum([abs(k) for k in newunits])+sum([abs(k) for k in powers])<sum([abs(k) for k in bestunits])+sum([abs(k) for k in bestpowers]):
+            bestpowers=powers
+            bestunits=newunits
+    derived_unitarray=bestpowers
+    unitarray=bestunits
+        
+#===============================================================================
+#write the file
     out_str = '{0:.2f} '.format(val)
     for j in range(len(units)):
         if unitarray[j]!=0:
