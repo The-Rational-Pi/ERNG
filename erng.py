@@ -9,20 +9,14 @@ print('///////////////////////////////////////////////')
 print('/// THE ENGINEERING RANDOM NUMBER GENERATOR ///')
 print('///////////////////////////////////////////////')
 
-while True:
-    num = input("How many random numbers shall I generate? ")
-    if num.isnumeric():
-        num=int(num)
-        break
-    else:
-        print('Please enter a number.')
+num = input("How many random numbers shall I generate? ")
 #===============================================================================
 #generate the units
 f = open('out.docx','w')
 for i in range(num):
     mag = np.random.randint(0,11)
     val = 2*10**mag*np.random.random()-10**mag #float between -1e10 and 1e10
-    unitnum = np.random.randint(1,10)
+    unitnum = np.random.randint(1,20)
     unitarray = [0]*len(units)
     for j in range(unitnum):
         a = np.random.randint(0,len(units)) #random index of units
@@ -65,6 +59,14 @@ for i in range(num):
                 this_str = units[j]+' '
             else:
                 this_str = units[j]+'^'+str(unitarray[j])+' '
+            out_str+=this_str
+            del this_str
+    for j in range(len(derived_units)):
+        if derived_unitarray[j]!=0:
+            if derived_unitarray[j]==1:
+                this_str = derived_units[j]+' '
+            else:
+                this_str = derived_units[j]+'^'+str(derived_unitarray[j])+' '
             out_str+=this_str
             del this_str
     f.write(out_str+'\n')
