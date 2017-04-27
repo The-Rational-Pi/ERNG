@@ -46,6 +46,8 @@ t.write('\\begin{align}\n')
 #===============================================================================
 #load the file in read mode
 f = open('out.docx','r')
+#===============================================================================
+#fuck with the strings and make it a proper tex file
 for line in f:
     line = line.replace('$','\\$')
     things = line.split(' ')
