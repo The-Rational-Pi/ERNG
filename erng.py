@@ -88,7 +88,7 @@ f = open('out.docx','r')
 for line in f:
     line = line.replace('$','\\$')
     things = line.split(' ')
-    t.write(things[0])
+    t.write('&'+things[0])
     for i in range(1,len(things)):
         parts = things[i].split('^')
         if len(parts) == 1:
